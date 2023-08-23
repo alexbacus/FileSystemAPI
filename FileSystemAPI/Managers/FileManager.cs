@@ -2,29 +2,46 @@
 using FileSystemAPI.Interfaces;
 using FileSystemAPI.Models;
 using File = FileSystemAPI.Models.File;
+using Directory = FileSystemAPI.Models.Directory;
+using System.Web;
 
 namespace FileSystemAPI.Managers
 {
     public class FileManager : IFileManager
     {
-        public File CreateFile(string name, int id, User user, FsEntry parent, List<Permission> permissions, string extension, string path)
+        private readonly FileSystemContext context;
+        private readonly IDirectoryManager directoryManager;
+        public FileManager(FileSystemContext context, IDirectoryManager directoryManager)
         {
-            return new File
-            {
-                Name = name,
-                Id = id,
-                User = user,
-                Parent = parent,
-                Permissions = permissions,
-                Extension = extension,
-                Path = path
-            };
+            this.context = context;
+            this.directoryManager = directoryManager;
         }
 
-        public File GetFile(string path)
+        public File CreateFile(string name, string path, string parentPath, string extension)
+        {
+            var parent = directoryManager.ReadDirectory(parentPath);
+            if (parent == null)
+                throw new Exception($"Parent directory not found: {parentPath}");
+
+            path = HttpUtility.UrlDecode(path);
+            var file = new Models.Data.FileModel
+            {
+                Name = name,
+                Extension = extension,
+                Path = path,
+                ParentId = parent.Id
+            };
+            this.context.Add(file);
+            this.context.SaveChanges();
+            return new File { Name = name, Path = path };
+        }
+
+        public Models.Data.FileModel GetFile(string path)
         {
             // check current user's permissions for path before executing
-            return new File();
+            path = HttpUtility.UrlDecode(path);
+            var directory = context.Files.Where(p => p.Path == path).FirstOrDefault();
+            return directory ?? (directory = new Models.Data.FileModel { Name = "Not Found" });
         }
 
         public string ReadFile(string path)

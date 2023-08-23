@@ -1,5 +1,8 @@
+using FileSystemAPI;
 using FileSystemAPI.Interfaces;
 using FileSystemAPI.Managers;
+using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +16,7 @@ builder.Services.AddScoped<IDirectoryManager, DirectoryManager>();
 builder.Services.AddScoped<IFileManager, FileManager>();
 builder.Services.AddScoped<IUserManager, UserManager>();
 builder.Services.AddScoped<IUserSessionManager, UserSessionManager>();
+builder.Services.AddDbContext<FileSystemContext>(options => options.UseSqlServer("Server=tcp:alexb-filesystem.database.windows.net,1433;Initial Catalog=filesystem_db;Persist Security Info=False;User ID=alexb;Password=Password1;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
 
 var app = builder.Build();
 

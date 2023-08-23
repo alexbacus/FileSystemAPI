@@ -2,6 +2,7 @@
 using FileSystemAPI.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using File = FileSystemAPI.Models.File;
+using Directory = FileSystemAPI.Models.Directory;
 
 namespace FileSystemAPI.Controllers
 {
@@ -22,7 +23,7 @@ namespace FileSystemAPI.Controllers
             this.directoryManager = directoryManager;
         }
 
-        [HttpGet("{path}")]
+        [HttpGet("{path}/content")]
         public ActionResult<string> ReadFile(string path)
         {
             var currentSession = userSessionManager.GetActiveSession();
@@ -38,21 +39,38 @@ namespace FileSystemAPI.Controllers
             }
         }
 
-        [HttpPost("{parentPath}")]
-        public ActionResult<File> CreateFile(File file, string parentPath)
+        [HttpGet("{path}")]
+        public ActionResult<Models.Data.FileModel> GetFile(string path)
         {
-            var currentSession = userSessionManager.GetActiveSession();
-            var userPermissions = this.userManager.ReadPermissionsForPath(parentPath, currentSession.CurrentUser.Id);
+            //var currentSession = userSessionManager.GetActiveSession();
+            //var permissions = this.userManager.ReadPermissionsForPath(path, currentSession.CurrentUser.Id);
 
-            if (userPermissions.Contains(Permission.Create))
-            {
-                var parent = directoryManager.ReadDirectory(parentPath);
-                return this.Ok(fileManager.CreateFile(file.Name, file.Id, currentSession.CurrentUser, parent, file.Permissions, file.Extension, file.Path));
-            }
-            else
-            {
-                return this.Unauthorized($"Current user does not have create permissions for {parentPath}");
-            }
+            //if (permissions.Contains(Permission.Read))
+            //{
+            return this.Ok(fileManager.GetFile(path));
+            //}
+            //else
+            //{
+            //    return this.Unauthorized($"Current user does not have read permissions for {path}");
+            //}
+        }
+
+        [HttpPost()]
+        public ActionResult<File> CreateFile(string name, string path, string parentPath, string extension)
+        {
+            //var currentSession = userSessionManager.GetActiveSession();
+            //var userPermissions = this.userManager.ReadPermissionsForPath(parentPath, currentSession.CurrentUser.Id);
+
+            //if (userPermissions.Contains(Permission.Create))
+            //{
+                //var parent = directoryManager.ReadDirectory(parentPath);
+                //var parent = new Directory { };
+                return this.Ok(fileManager.CreateFile(name, path, parentPath, extension));
+            //}
+            //else
+            //{
+            //    return this.Unauthorized($"Current user does not have create permissions for {parentPath}");
+            //}
 
         }
 

@@ -21,36 +21,36 @@ namespace FileSystemAPI.Controllers
         }
 
         [HttpGet("{path}")]
-        public ActionResult<Directory> ReadDirectory(string path)
+        public ActionResult<Models.Data.DirectoryModel> ReadDirectory(string path)
         {
-            var currentSession = userSessionManager.GetActiveSession();
-            var permissions = this.userManager.ReadPermissionsForPath(path, currentSession.CurrentUser.Id);
+            //var currentSession = userSessionManager.GetActiveSession();
+            //var permissions = this.userManager.ReadPermissionsForPath(path, currentSession.CurrentUser.Id);
 
-            if (permissions.Contains(Permission.Read))
-            {
+            //if (permissions.Contains(Permission.Read))
+            //{
                 return this.Ok(directoryManager.ReadDirectory(path));
-            }
-            else
-            {
-                return this.Unauthorized($"Current user does not have read permissions for {path}");
-            }
+            //}
+            //else
+            //{
+            //    return this.Unauthorized($"Current user does not have read permissions for {path}");
+            //}
         }
 
         [HttpPost("{parentPath}")]
-        public ActionResult<Directory> CreateDirectory(Directory directory, string parentPath)
+        public ActionResult<Directory> CreateDirectory(string path, string name, string parentPath)
         {
-            var currentSession = userSessionManager.GetActiveSession();
-            var userPermissions = this.userManager.ReadPermissionsForPath(parentPath, currentSession.CurrentUser.Id);
+            //var currentSession = userSessionManager.GetActiveSession();
+            //var userPermissions = this.userManager.ReadPermissionsForPath(parentPath, currentSession.CurrentUser.Id);
 
-            if (userPermissions.Contains(Permission.Create))
-            {
-                var parent = directoryManager.ReadDirectory(parentPath);
-                return this.Ok(directoryManager.CreateDirectory(directory.Name, directory.Id, currentSession.CurrentUser, parent, directory.Permissions, directory.Path));
-            }
-            else
-            {
-                return this.Unauthorized($"Current user does not have create permissions for {parentPath}");
-            }
+            //if (userPermissions.Contains(Permission.Create))
+            //{
+                //var parent = directoryManager.ReadDirectory(parentPath);
+                return this.Ok(directoryManager.CreateDirectory(name, path, parentPath));
+            //}
+            //else
+            //{
+            //    return this.Unauthorized($"Current user does not have create permissions for {parentPath}");
+            //}
         }
 
         [HttpPut("{directoryPath}")]

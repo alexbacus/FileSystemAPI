@@ -1,29 +1,42 @@
 ﻿using FileSystem.Models.Enums;
 using FileSystemAPI.Interfaces;
 using FileSystemAPI.Models;
+using System.Web;
 using Directory = FileSystemAPI.Models.Directory;
 
 namespace FileSystemAPI.Managers
 {
     public class DirectoryManager : IDirectoryManager
     {
-        public Directory CreateDirectory(string name, int id, User user, FsEntry parent, List<Permission> permissions, string path)
+        private readonly FileSystemContext context;
+        public DirectoryManager(FileSystemContext context)
         {
-            return new Directory
-            {
-                Name = name,
-                Id = id,
-                User = user,
-                Parent = parent,
-                Permissions = permissions,
-                Path = path
-            };
+            this.context = context;
         }
 
-        public Directory ReadDirectory(string path)
+        public Directory CreateDirectory(string name, string path, string parentPath)
         {
-            // check current user's permissions for path before executing
-            return new Directory();
+            var parent = ReadDirectory(parentPath);
+            if (parent == null)
+                throw new Exception($"Parent directory not found: {parentPath}");
+
+            path = HttpUtility.UrlDecode(path);
+            var directory = new Models.Data.DirectoryModel
+            {
+                Name = name,
+                Path = path,
+                ParentId = parent.Id
+            };
+            this.context.Add(directory);
+            this.context.SaveChanges();
+            return new Directory { Name = name, Path = path};
+        }
+
+        public Models.Data.DirectoryModel ReadDirectory(string path)
+        {
+            path = HttpUtility.UrlDecode(path);
+            var directory = context.Directories.Where(p => p.Path == path).FirstOrDefault();
+            return directory ?? (directory = new Models.Data.DirectoryModel { Name = "Not Found"});
         }
 
         public void UpdateDirectory(string name, Directory directory)
