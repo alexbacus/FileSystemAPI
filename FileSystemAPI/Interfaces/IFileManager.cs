@@ -12,7 +12,7 @@ namespace FileSystemAPI.Interfaces
 
         string ReadFile(string path);
 
-        void UpdateFile(string path, File file);
+        void UpdateFile(string path, string name, string content, string extension);
 
         void WriteFile(string path, string content);
 

@@ -54,20 +54,28 @@ namespace FileSystemAPI.Controllers
         }
 
         [HttpPut("{directoryPath}")]
-        public ActionResult UpdateDirectoryPermissions(List<Permission> permissions, string directoryPath)
+        public ActionResult UpdateDirectory(string directoryPath, string name)
         {
-            var currentSession = userSessionManager.GetActiveSession();
-            var userPermissions = this.userManager.ReadPermissionsForPath(directoryPath, currentSession.CurrentUser.Id);
+            //var currentSession = userSessionManager.GetActiveSession();
+            //var userPermissions = this.userManager.ReadPermissionsForPath(directoryPath, currentSession.CurrentUser.Id);
 
-            if (userPermissions.Contains(Permission.Write))
-            {
-                directoryManager.UpdateDirectoryPermissions(permissions, directoryPath);
+            //if (userPermissions.Contains(Permission.Write))
+            //{
+            //    directoryManager.UpdateDirectoryPermissions(permissions, directoryPath);
+                directoryManager.UpdateDirectory(directoryPath, name);
                 return this.NoContent();
-            }
-            else
-            {
-                return this.Unauthorized($"Current user does not have write permissions for {directoryPath}");
-            }
+            //}
+            //else
+            //{
+            //    return this.Unauthorized($"Current user does not have write permissions for {directoryPath}");
+            //}
+        }
+
+        [HttpDelete("{directoryPath}")]
+        public ActionResult DeleteDirectory(string directoryPath)
+        {
+            directoryManager.DeleteDirectory(directoryPath);
+            return this.NoContent();
         }
     }
 }

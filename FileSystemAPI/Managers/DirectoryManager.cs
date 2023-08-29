@@ -39,16 +39,30 @@ namespace FileSystemAPI.Managers
             return directory ?? (directory = new Models.Data.DirectoryModel { Name = "Not Found"});
         }
 
-        public void UpdateDirectory(string name, Directory directory)
+        public void UpdateDirectory(string path, string name)
         {
             // check current user's permissions for path before executing
             // update directory
+            var directory = context.Directories.Where(p => p.Path == path).FirstOrDefault();
+            if (directory == null)
+            {
+                throw new Exception("Directory not found.");
+            }
+            directory.Name = name;
+            context.SaveChanges();
         }
 
-        public void DeleteDirectory(string name)
+        public void DeleteDirectory(string path)
         {
             // check current user's permissions for path before executing
             // delete directory
+            var directory = context.Directories.Where(p => p.Path == path).FirstOrDefault();
+            if (directory == null)
+            {
+                throw new Exception("Directory not found.");
+            }
+            this.context.Remove(directory);
+            this.context.SaveChanges();
         }
 
         public void UpdateDirectoryPermissions(List<Permission> permissions, string directoryPath)

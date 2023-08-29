@@ -10,9 +10,9 @@ namespace FileSystemAPI.Interfaces
 
         Models.Data.DirectoryModel ReadDirectory(string path);
 
-        void UpdateDirectory(string name, Directory directory);
+        void UpdateDirectory(string path, string name);
 
-        void DeleteDirectory(string name);
+        void DeleteDirectory(string path);
 
         void UpdateDirectoryPermissions(List<Permission> permissions, string directoryPath);
     }

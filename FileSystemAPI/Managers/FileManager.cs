@@ -50,10 +50,22 @@ namespace FileSystemAPI.Managers
             return "file content";
         }
 
-        public void UpdateFile(string path, File file)
+        public void UpdateFile(string path, string name, string content, string extension)
         {
-            // check current user's permissions for path before executing
-            // update file
+            var file = context.Files.Where(p => p.Path == path).FirstOrDefault();
+            if (file == null)
+            {
+                throw new Exception("File not found.");
+            }
+            file.Name = name;
+            if (!String.IsNullOrWhiteSpace(content)) {
+                file.FileContent = content;
+            }
+            if (!String.IsNullOrWhiteSpace(extension))
+            {
+                file.Extension = extension;
+            }
+            context.SaveChanges();
         }
 
         public void WriteFile(string path, string content)
@@ -66,6 +78,13 @@ namespace FileSystemAPI.Managers
         {
             // check current user's permissions for path before executing
             // delete file
+            var file = context.Files.Where(p => p.Path == path).FirstOrDefault();
+            if (file == null)
+            {
+                throw new Exception("File not found.");
+            }
+            context.Remove(file);
+            context.SaveChanges();
         }
 
         public List<File> GetFilesForPath(string directoryPath)

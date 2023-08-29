@@ -91,20 +91,17 @@ namespace FileSystemAPI.Controllers
         }
 
         [HttpPut("{filePath}")]
-        public ActionResult UpdateFilePermissions(List<Permission> permissions, string filePath)
+        public ActionResult UpdateFile(string filePath, string name, string content, string extension)
         {
-            var currentSession = userSessionManager.GetActiveSession();
-            var userPermissions = this.userManager.ReadPermissionsForPath(filePath, currentSession.CurrentUser.Id);
+            fileManager.UpdateFile(filePath, name, content, extension);
+            return this.NoContent();
+        }
 
-            if (userPermissions.Contains(Permission.Write))
-            {
-                fileManager.UpdateFilePermissions(permissions, filePath);
-                return this.NoContent();
-            }
-            else
-            {
-                return this.Unauthorized($"Current user does not have write permissions for {filePath}");
-            }
+        [HttpDelete("{filePath}")]
+        public ActionResult DeleteFile(string filePath)
+        {
+            fileManager.DeleteFile(filePath);
+            return this.NoContent();
         }
     }
 }
