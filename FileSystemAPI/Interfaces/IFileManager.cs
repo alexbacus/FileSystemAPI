@@ -6,7 +6,7 @@ namespace FileSystemAPI.Interfaces
 {
     public interface IFileManager
     {
-        File CreateFile(string name, string path, string parentPath, string extension);
+        File CreateFile(string name, string path, string parentPath, string extension, int authorId);
 
         Models.Data.FileModel GetFile(string path);
 

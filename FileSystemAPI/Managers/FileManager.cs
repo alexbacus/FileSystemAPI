@@ -17,7 +17,7 @@ namespace FileSystemAPI.Managers
             this.directoryManager = directoryManager;
         }
 
-        public File CreateFile(string name, string path, string parentPath, string extension)
+        public File CreateFile(string name, string path, string parentPath, string extension, int authorId)
         {
             var parent = directoryManager.ReadDirectory(parentPath);
             if (parent == null)
@@ -29,7 +29,8 @@ namespace FileSystemAPI.Managers
                 Name = name,
                 Extension = extension,
                 Path = path,
-                ParentId = parent.Id
+                ParentId = parent.Id,
+                AuthorId = authorId
             };
             this.context.Add(file);
             this.context.SaveChanges();

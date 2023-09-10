@@ -14,7 +14,7 @@ namespace FileSystemAPI.Managers
             this.context = context;
         }
 
-        public Directory CreateDirectory(string name, string path, string parentPath)
+        public Directory CreateDirectory(string name, string path, string parentPath, int authorId)
         {
             var parent = ReadDirectory(parentPath);
             if (parent == null)
@@ -25,7 +25,8 @@ namespace FileSystemAPI.Managers
             {
                 Name = name,
                 Path = path,
-                ParentId = parent.Id
+                ParentId = parent.Id,
+                AuthorId = authorId
             };
             this.context.Add(directory);
             this.context.SaveChanges();

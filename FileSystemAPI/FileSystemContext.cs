@@ -8,6 +8,7 @@ namespace FileSystemAPI
 
         public DbSet<Models.Data.DirectoryModel> Directories { get; set; }
         public DbSet<Models.Data.FileModel> Files { get; set; }
+        public DbSet<Models.Data.UserModel> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

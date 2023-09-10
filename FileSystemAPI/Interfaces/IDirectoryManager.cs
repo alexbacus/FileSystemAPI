@@ -6,7 +6,7 @@ namespace FileSystemAPI.Interfaces
 {
     public interface IDirectoryManager
     {
-        Directory CreateDirectory(string name, string path, string parentPath);
+        Directory CreateDirectory(string name, string path, string parentPath, int authorId);
 
         Models.Data.DirectoryModel ReadDirectory(string path);
 

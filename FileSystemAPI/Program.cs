@@ -2,7 +2,6 @@ using FileSystemAPI;
 using FileSystemAPI.Interfaces;
 using FileSystemAPI.Managers;
 using Microsoft.EntityFrameworkCore;
-using MySqlConnector;
 
 var builder = WebApplication.CreateBuilder(args);
 

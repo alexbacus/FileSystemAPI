@@ -40,13 +40,17 @@ namespace FileSystemAPI.Controllers
         }
 
         [HttpGet("{path}")]
-        public ActionResult<Models.Data.FileModel> GetFile(string path)
+        public ActionResult<Models.Data.FileModel> GetFile(string path, int userId)
         {
             //var currentSession = userSessionManager.GetActiveSession();
             //var permissions = this.userManager.ReadPermissionsForPath(path, currentSession.CurrentUser.Id);
 
             //if (permissions.Contains(Permission.Read))
             //{
+            if (userId == 0 || userId == null)
+            {
+                return this.Unauthorized($"Must be logged in to perform operation.");
+            }
             return this.Ok(fileManager.GetFile(path));
             //}
             //else
@@ -56,16 +60,20 @@ namespace FileSystemAPI.Controllers
         }
 
         [HttpPost()]
-        public ActionResult<File> CreateFile(string name, string path, string parentPath, string extension)
+        public ActionResult<File> CreateFile(string name, string path, string parentPath, string extension, int userId)
         {
             //var currentSession = userSessionManager.GetActiveSession();
             //var userPermissions = this.userManager.ReadPermissionsForPath(parentPath, currentSession.CurrentUser.Id);
 
             //if (userPermissions.Contains(Permission.Create))
             //{
-                //var parent = directoryManager.ReadDirectory(parentPath);
-                //var parent = new Directory { };
-                return this.Ok(fileManager.CreateFile(name, path, parentPath, extension));
+            //var parent = directoryManager.ReadDirectory(parentPath);
+            //var parent = new Directory { };
+            if (userId == 0 || userId == null)
+            {
+                return this.Unauthorized($"Must be logged in to perform operation.");
+            }
+            return this.Ok(fileManager.CreateFile(name, path, parentPath, extension, userId));
             //}
             //else
             //{
@@ -91,15 +99,23 @@ namespace FileSystemAPI.Controllers
         }
 
         [HttpPut("{filePath}")]
-        public ActionResult UpdateFile(string filePath, string name, string content, string extension)
+        public ActionResult UpdateFile(string filePath, string name, string content, string extension, int userId)
         {
+            if (userId == 0 || userId == null)
+            {
+                return this.Unauthorized($"Must be logged in to perform operation.");
+            }
             fileManager.UpdateFile(filePath, name, content, extension);
             return this.NoContent();
         }
 
         [HttpDelete("{filePath}")]
-        public ActionResult DeleteFile(string filePath)
+        public ActionResult DeleteFile(string filePath, int userId)
         {
+            if (userId == 0 || userId == null)
+            {
+                return this.Unauthorized($"Must be logged in to perform operation.");
+            }
             fileManager.DeleteFile(filePath);
             return this.NoContent();
         }

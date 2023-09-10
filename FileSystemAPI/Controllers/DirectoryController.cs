@@ -21,14 +21,18 @@ namespace FileSystemAPI.Controllers
         }
 
         [HttpGet("{path}")]
-        public ActionResult<Models.Data.DirectoryModel> ReadDirectory(string path)
+        public ActionResult<Models.Data.DirectoryModel> ReadDirectory(string path, int userId)
         {
             //var currentSession = userSessionManager.GetActiveSession();
             //var permissions = this.userManager.ReadPermissionsForPath(path, currentSession.CurrentUser.Id);
 
             //if (permissions.Contains(Permission.Read))
             //{
-                return this.Ok(directoryManager.ReadDirectory(path));
+            if (userId == 0 || userId == null)
+            {
+                return this.Unauthorized($"Must be logged in to perform operation.");
+            }
+            return this.Ok(directoryManager.ReadDirectory(path));
             //}
             //else
             //{
@@ -37,15 +41,19 @@ namespace FileSystemAPI.Controllers
         }
 
         [HttpPost("{parentPath}")]
-        public ActionResult<Directory> CreateDirectory(string path, string name, string parentPath)
+        public ActionResult<Directory> CreateDirectory(string path, string name, string parentPath, int userId)
         {
             //var currentSession = userSessionManager.GetActiveSession();
             //var userPermissions = this.userManager.ReadPermissionsForPath(parentPath, currentSession.CurrentUser.Id);
 
             //if (userPermissions.Contains(Permission.Create))
             //{
-                //var parent = directoryManager.ReadDirectory(parentPath);
-                return this.Ok(directoryManager.CreateDirectory(name, path, parentPath));
+            //var parent = directoryManager.ReadDirectory(parentPath);
+            if (userId == 0 || userId == null)
+            {
+                return this.Unauthorized($"Must be logged in to perform operation.");
+            }
+            return this.Ok(directoryManager.CreateDirectory(name, path, parentPath, userId));
             //}
             //else
             //{
@@ -54,7 +62,7 @@ namespace FileSystemAPI.Controllers
         }
 
         [HttpPut("{directoryPath}")]
-        public ActionResult UpdateDirectory(string directoryPath, string name)
+        public ActionResult UpdateDirectory(string directoryPath, string name, int userId)
         {
             //var currentSession = userSessionManager.GetActiveSession();
             //var userPermissions = this.userManager.ReadPermissionsForPath(directoryPath, currentSession.CurrentUser.Id);
@@ -62,8 +70,12 @@ namespace FileSystemAPI.Controllers
             //if (userPermissions.Contains(Permission.Write))
             //{
             //    directoryManager.UpdateDirectoryPermissions(permissions, directoryPath);
-                directoryManager.UpdateDirectory(directoryPath, name);
-                return this.NoContent();
+            if (userId == 0 || userId == null)
+            {
+                return this.Unauthorized($"Must be logged in to perform operation.");
+            }
+            directoryManager.UpdateDirectory(directoryPath, name);
+            return this.NoContent();
             //}
             //else
             //{
@@ -72,8 +84,12 @@ namespace FileSystemAPI.Controllers
         }
 
         [HttpDelete("{directoryPath}")]
-        public ActionResult DeleteDirectory(string directoryPath)
+        public ActionResult DeleteDirectory(string directoryPath, int userId)
         {
+            if (userId == 0 || userId == null)
+            {
+                return this.Unauthorized($"Must be logged in to perform operation.");
+            }
             directoryManager.DeleteDirectory(directoryPath);
             return this.NoContent();
         }

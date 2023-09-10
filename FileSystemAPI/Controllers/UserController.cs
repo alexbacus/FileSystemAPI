@@ -18,14 +18,15 @@ namespace FileSystemAPI.Controllers
         }
 
         [HttpPost("login")]
-        public ActionResult<string> Login(LoginRequest request)
+        public ActionResult<int> Login(LoginRequest request)
         {
-            var user = userManager.ReadUser(request.Username);
-            UserSession session = userSessionManager.GetActiveSession();
+            var userId = userSessionManager.Login(request.Username, request.Password);
+            if (userId == 0)
+            {
+                return this.Unauthorized("Login failed.");
+            }
 
-            session.Login(user);
-
-            return this.Ok("Root: \"/\"");
+            return this.Ok(userId);
         }
     }
 }

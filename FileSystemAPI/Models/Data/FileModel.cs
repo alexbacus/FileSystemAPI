@@ -8,5 +8,6 @@
         public int ParentId { get; set; }
         public string Extension { get; set; }
         public string? FileContent { get; set; }
+        public int? AuthorId { get; set; }
     }
 }

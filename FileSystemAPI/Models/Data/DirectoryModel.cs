@@ -8,6 +8,7 @@ namespace FileSystemAPI.Models.Data
         public string Name { get; set; }
         public string Path { get; set; }
         public int? ParentId { get; set; }
+        public int? AuthorId { get; set; }
         //public long Size { get; set; }
         //public User User { get; set; }
         //public List<Permission> Permissions { get; set; }
